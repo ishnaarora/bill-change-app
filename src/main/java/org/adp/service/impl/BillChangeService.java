@@ -33,7 +33,7 @@ public class BillChangeService implements IChangeService {
         sortedCoins.sort(Comparator.comparingDouble(Coin::getValue).reversed());
         int totalNoOfCoins = sortedCoins.size();
         for (int i = 0; i < totalNoOfCoins; i++) {
-            List<Coin> coinChange = extracted(remainingAmount, sortedCoins.subList(i, totalNoOfCoins));
+            List<Coin> coinChange = getChange(remainingAmount, sortedCoins.subList(i, totalNoOfCoins));
             if (!isEmpty(coinChange)) {
                 return coinChange;
             }
@@ -42,7 +42,7 @@ public class BillChangeService implements IChangeService {
         return change;
     }
 
-    private List<Coin> extracted(double remainingAmount, List<Coin> sortedCoins) {
+    private List<Coin> getChange(double remainingAmount, List<Coin> sortedCoins) {
         // Iterate through the coins
         List<Coin> change = new ArrayList<>();
         for (Coin coin : sortedCoins) {
