@@ -47,12 +47,8 @@ public class BillChangeControllerTest {
         Assert.assertEquals("No change possible for given bill.", response.getBody());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void shouldReturnBadRequestWhenBadInputProvided() {
-        ResponseEntity response = controller.getChange(-10);
-        Assert.assertNotNull(response);
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        Assert.assertEquals("Invalid bill amount.", response.getBody());
-        Mockito.verifyZeroInteractions(changeService);
+        controller.getChange(-10);
     }
 }

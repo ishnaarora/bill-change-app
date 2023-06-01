@@ -26,14 +26,13 @@ public class BillChangeService implements IChangeService {
     @Override
     public List<Coin> calculateChange(double billAmount) {
         List<Coin> change = new ArrayList<>();
-        double remainingAmount = billAmount;
 
-        // Sort the coins in descending order of value
+        // Need to pick largest denomination first to enable min use of coins
         List<Coin> sortedCoins = new ArrayList<>(coins.values());
         sortedCoins.sort(Comparator.comparingDouble(Coin::getValue).reversed());
         int totalNoOfCoins = sortedCoins.size();
         for (int i = 0; i < totalNoOfCoins; i++) {
-            List<Coin> coinChange = getChange(remainingAmount, sortedCoins.subList(i, totalNoOfCoins));
+            List<Coin> coinChange = getChange(billAmount, sortedCoins.subList(i, totalNoOfCoins));
             if (!isEmpty(coinChange)) {
                 return coinChange;
             }
@@ -55,16 +54,16 @@ public class BillChangeService implements IChangeService {
             }
         }
 
-        // If exact change is not possible, rollback the coin quantities and clear change list
+        // If change not possible then add back the coin quantities
         if (remainingAmount > 0) {
-            rollbackCoinQuantities(change);
+            resetQuantities(change);
             change.clear();
         }
 
         return change;
     }
 
-    private void rollbackCoinQuantities(List<Coin> change) {
+    private void resetQuantities(List<Coin> change) {
         for (Coin coin : change) {
             Coin originalCoin = coins.get(coin.getValue());
             originalCoin.setQuantity(originalCoin.getQuantity() + coin.getQuantity());

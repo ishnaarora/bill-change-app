@@ -27,7 +27,7 @@ public class BillChangeController {
     @GetMapping("/{billAmount}")
     public ResponseEntity getChange(@NotNull @PathVariable int billAmount) {
         if (billAmount <= 0) {
-            return ResponseEntity.badRequest().body("Invalid bill amount.");
+            throw new IllegalArgumentException("Invalid bill amount.");
         }
 
         List<Coin> change = billChangeService.calculateChange(billAmount);
