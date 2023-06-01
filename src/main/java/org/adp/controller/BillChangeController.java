@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -19,21 +20,23 @@ public class BillChangeController {
 
     private final BillChangeService billChangeService;
 
+    private static final List<Integer> SUPPORTED_BILLS = Arrays.asList(1, 2, 5, 10, 20, 50, 100);
+
     @Autowired
     public BillChangeController(BillChangeService billChangeService) {
         this.billChangeService = billChangeService;
     }
 
     @GetMapping("/{billAmount}")
-    public ResponseEntity getChange(@NotNull @PathVariable int billAmount) {
-        if (billAmount <= 0) {
-            throw new IllegalArgumentException("Invalid bill amount.");
+    public ResponseEntity<List<Coin>> getChange(@NotNull @PathVariable int billAmount) {
+        if (billAmount <= 0 || !SUPPORTED_BILLS.contains(billAmount)) {
+            throw new IllegalArgumentException(String.format("Invalid bill amount %s",billAmount));
         }
 
         List<Coin> change = billChangeService.calculateChange(billAmount);
 
         if (change.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No change possible for given bill.");
+            throw new IllegalStateException("No change possible for given bill.");
         }
 
         return ResponseEntity.ok(change);

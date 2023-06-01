@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RestAPIResponseEntityExceptionHandler {
 
     @ExceptionHandler(value
-            = {IllegalArgumentException.class})
+            = {IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<String> handleIllegalArgumentException(Exception ex) {
         log.error("Exception occurred: ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("Illegal Argument specified : %s", ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("Illegal Argument or State : %s", ex.getMessage()));
 
     }
 
