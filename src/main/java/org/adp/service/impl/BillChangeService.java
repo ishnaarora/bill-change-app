@@ -12,7 +12,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Service
 @Slf4j
 public class BillChangeService implements IChangeService {
-    private Map<Double, Coin> coins;
+    private final Map<Double, Coin> coins;
 
     public BillChangeService() {
         // Initialize the coins with their initial quantities
